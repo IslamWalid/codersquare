@@ -7,7 +7,7 @@ const createUser = async (req, res) => {
   const { email, username, firstName, lastName, password } = req.body;
 
   if (!id || !email || !username || !firstName || !lastName || !password) {
-    res.status(400).json({ msg: 'required fields are missing' });
+    return res.status(400).json({ msg: 'required fields are missing' });
   }
 
   try {

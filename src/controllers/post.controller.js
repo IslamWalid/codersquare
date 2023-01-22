@@ -6,6 +6,10 @@ const createPost = async (req, res) => {
   const id = crypto.randomUUID();
   const { userId, title, body } = req.body;
 
+  if (!userId || !title || !body) {
+    return res.status(400).json({ msg: 'required fields are missing' });
+  }
+
   try {
     await Post.create({
       id,
@@ -16,7 +20,7 @@ const createPost = async (req, res) => {
     res.status(200).json({ id });
   } catch (error) {
     if (error instanceof ForeignKeyConstraintError) {
-      res.status(400).json({ msg: 'userId does not exist' });
+      res.status(400).json({ msg: 'userId does not belong to existing user' });
     } else {
       res.status(500).end();
     }
@@ -24,7 +28,8 @@ const createPost = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  const id = req.param('id');
+  const id = req.params.id;
+
   try {
     const post = await Post.findByPk(id);
     if (post) {
@@ -46,7 +51,8 @@ const getAllPosts = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const id = req.param('id');
+  const id = req.params.id;
+
   try {
     await Post.destroy({
       where: {
