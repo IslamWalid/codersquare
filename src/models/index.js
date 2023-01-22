@@ -1,9 +1,12 @@
-const { Sequelize, DataTypes } = require('sequelize')
+const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './DB_FILE.db'
-})
+  storage: './DB_FILE.db',
+  dialectOptions: {
+    foreign_keys: 'ON'
+  }
+});
 
 const User = sequelize.define('User', {
   id: {
@@ -32,7 +35,7 @@ const User = sequelize.define('User', {
   createdAt: true,
   updatedAt: false,
   deletedAt: false
-})
+});
 
 const Post = sequelize.define('Post', {
   id: {
@@ -44,7 +47,7 @@ const Post = sequelize.define('Post', {
     allowNull: false
   },
   body: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false
   }
 }, {
@@ -52,15 +55,15 @@ const Post = sequelize.define('Post', {
   createdAt: true,
   updatedAt: false,
   deletedAt: false
-})
+});
 
 const Like = sequelize.define('Like', {}, {
   timestamps: false
-})
+});
 
 const Comment = sequelize.define('Comment', {
   body: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false
   }
 }, {
@@ -68,19 +71,19 @@ const Comment = sequelize.define('Comment', {
   createdAt: true,
   updatedAt: false,
   deletedAt: false
-})
+});
 
-User.hasMany(Post, { onDelete: 'CASCADE' })
-Post.belongsTo(User, { onDelete: 'CASCADE' })
+User.hasMany(Post, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Post.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
 
-User.belongsToMany(Post, { through: Like })
-Post.belongsToMany(User, { through: Like })
+User.belongsToMany(Post, { through: Like, foreignKey: 'userId', otherKey: 'postId' });
+Post.belongsToMany(User, { through: Like, foreignKey: 'postId', otherKey: 'userId' });
 
-User.belongsToMany(Post, { through: Comment })
-Post.belongsToMany(User, { through: Comment })
+User.belongsToMany(Post, { through: Comment, foreignKey: 'userId', otherKey: 'postId' });
+Post.belongsToMany(User, { through: Comment, foreignKey: 'postId', otherKey: 'userId' });
 
 async function initDatabase () {
-  await sequelize.sync()
+  await sequelize.sync();
 }
 
 module.exports = {
@@ -89,4 +92,4 @@ module.exports = {
   Like,
   Comment,
   initDatabase
-}
+};
