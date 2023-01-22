@@ -11,5 +11,8 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
+    semi: ['warn', 'always'],
+    quotes: ['warn', 'single'],
+    'no-trailing-spaces': ['warn']
   }
-}
+};
