@@ -24,11 +24,7 @@ const getPostLikes = async (req, res) => {
   const postId = req.params.id;
 
   try {
-    const likes = await Like.findAll({
-      where: {
-        postId
-      }
-    });
+    const likes = await Like.findAll({ where: { postId } });
     res.status(200).json(likes);
   } catch (error) {
     res.status(500).end();
@@ -39,12 +35,7 @@ const deleteLike = async (req, res) => {
   const { userId, postId } = req.body;
 
   try {
-    await Like.destroy({
-      where: {
-        userId,
-        postId
-      }
-    });
+    await Like.destroy({ where: { userId, postId } });
     res.status(200).end();
   } catch (error) {
     res.status(500).end();

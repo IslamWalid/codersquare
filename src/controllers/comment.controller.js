@@ -24,11 +24,7 @@ const getPostComments = async (req, res) => {
   const postId = req.params.id;
 
   try {
-    const comments = await Comment.findAll({
-      where: {
-        postId
-      }
-    });
+    const comments = await Comment.findAll({ where: { postId } });
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).end();
@@ -39,12 +35,7 @@ const deleteComment = async (req, res) => {
   const { userId, postId } = req.body;
 
   try {
-    await Comment.destroy({
-      where: {
-        userId,
-        postId
-      }
-    });
+    await Comment.destroy({ where: { userId, postId } });
     res.status(200).end();
   } catch (error) {
     res.status(500).end();

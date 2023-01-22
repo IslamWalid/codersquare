@@ -11,12 +11,7 @@ const createPost = async (req, res) => {
   }
 
   try {
-    await Post.create({
-      id,
-      userId,
-      title,
-      body
-    });
+    await Post.create({ id, userId, title, body });
     res.status(200).json({ id });
   } catch (error) {
     if (error instanceof ForeignKeyConstraintError) {
@@ -54,11 +49,7 @@ const deletePost = async (req, res) => {
   const id = req.params.id;
 
   try {
-    await Post.destroy({
-      where: {
-        id
-      }
-    });
+    await Post.destroy({ where: { id } });
     res.status(200).end();
   } catch (error) {
     res.status(500).end();

@@ -11,14 +11,7 @@ const createUser = async (req, res) => {
   }
 
   try {
-    await User.create({
-      id,
-      email,
-      username,
-      firstName,
-      lastName,
-      password
-    });
+    await User.create({ id, email, username, firstName, lastName, password });
     res.status(200).json({ id });
   } catch (error) {
     if (error instanceof UniqueConstraintError) {
