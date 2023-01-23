@@ -4,6 +4,7 @@ const usersRouter = require('./src/routers/users.route');
 const postsRouter = require('./src/routers/posts.route');
 const likesRouter = require('./src/routers/likes.route');
 const commentsRouter = require('./src/routers/comments.route');
+const errorHandler = require('./src/models/middlewares/error-handler.middleware');
 
 (async () => {
   await models.initDatabase();
@@ -14,6 +15,7 @@ const commentsRouter = require('./src/routers/comments.route');
   app.use('/posts', postsRouter);
   app.use('/likes', likesRouter);
   app.use('/comments', commentsRouter);
+  app.use(errorHandler);
 
   app.listen(8080);
 })();

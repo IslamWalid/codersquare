@@ -1,3 +1,4 @@
+const log = require('fancy-log');
 const { ForeignKeyConstraintError } = require('sequelize');
 const { Like } = require('../models');
 
@@ -12,6 +13,7 @@ const createLike = async (req, res) => {
     await Like.create({ userId, postId });
     res.status(200).end();
   } catch (error) {
+    log.error(error);
     if (error instanceof ForeignKeyConstraintError) {
       res.status(400).json({ msg: 'userId or postId does not belong to existing user or post' });
     } else {
@@ -27,6 +29,7 @@ const getPostLikes = async (req, res) => {
     const likes = await Like.findAll({ where: { postId } });
     res.status(200).json(likes);
   } catch (error) {
+    log.error(error);
     res.status(500).end();
   }
 };
@@ -38,6 +41,7 @@ const deleteLike = async (req, res) => {
     await Like.destroy({ where: { userId, postId } });
     res.status(200).end();
   } catch (error) {
+    log.error(error);
     res.status(500).end();
   }
 };
