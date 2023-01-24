@@ -4,7 +4,7 @@ const usersRouter = require('./src/routers/users.route');
 const postsRouter = require('./src/routers/posts.route');
 const likesRouter = require('./src/routers/likes.route');
 const commentsRouter = require('./src/routers/comments.route');
-const errorHandler = require('./src/models/middlewares/error-handler.middleware');
+const errorHandler = require('./src/middlewares/error_handler.middleware');
 
 (async () => {
   await models.initDatabase();
