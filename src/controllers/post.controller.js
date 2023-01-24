@@ -19,7 +19,7 @@ const createPost = async (req, res) => {
     if (error instanceof ForeignKeyConstraintError) {
       res.status(400).json({ msg: 'userId does not belong to existing user' });
     } else {
-      res.status(500).end();
+      res.sendStatus(500);
     }
   }
 };
@@ -36,7 +36,7 @@ const getPost = async (req, res) => {
     }
   } catch (error) {
     log.error(error);
-    res.status(500).end();
+    res.sendStatus(500);
   }
 };
 
@@ -45,7 +45,7 @@ const getAllPosts = async (req, res) => {
     res.status(200).json(await Post.findAll());
   } catch (error) {
     log.error(error);
-    res.status(500).end();
+    res.sendStatus(500);
   }
 };
 
@@ -54,10 +54,10 @@ const deletePost = async (req, res) => {
 
   try {
     await Post.destroy({ where: { id } });
-    res.status(200).end();
+    res.sendStatus(200);
   } catch (error) {
     log.error(error);
-    res.status(500).end();
+    res.sendStatus(500);
   }
 };
 

@@ -11,13 +11,13 @@ const createComment = async (req, res) => {
 
   try {
     await Comment.create({ userId, postId, body });
-    res.status(200).end();
+    res.sendStatus(200);
   } catch (error) {
     log.error(error);
     if (error instanceof ForeignKeyConstraintError) {
       res.status(400).json({ msg: 'userId or postId does not belong to existing user or post' });
     } else {
-      res.status(500).end();
+      res.sendStatus(500);
     }
   }
 };
@@ -30,7 +30,7 @@ const getPostComments = async (req, res) => {
     res.status(200).json(comments);
   } catch (error) {
     log.error(error);
-    res.status(500).end();
+    res.sendStatus(500);
   }
 };
 
@@ -39,10 +39,10 @@ const deleteComment = async (req, res) => {
 
   try {
     await Comment.destroy({ where: { userId, postId } });
-    res.status(200).end();
+    res.sendStatus(200);
   } catch (error) {
     log.error(error);
-    res.status(500).end();
+    res.sendStatus(500);
   }
 };
 

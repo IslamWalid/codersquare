@@ -11,13 +11,13 @@ const createLike = async (req, res) => {
 
   try {
     await Like.create({ userId, postId });
-    res.status(200).end();
+    res.sendStatus(200);
   } catch (error) {
     log.error(error);
     if (error instanceof ForeignKeyConstraintError) {
       res.status(400).json({ msg: 'userId or postId does not belong to existing user or post' });
     } else {
-      res.status(500).end();
+      res.sendStatus(500);
     }
   }
 };
@@ -30,7 +30,7 @@ const getPostLikes = async (req, res) => {
     res.status(200).json(likes);
   } catch (error) {
     log.error(error);
-    res.status(500).end();
+    res.sendStatus(500);
   }
 };
 
@@ -39,10 +39,10 @@ const deleteLike = async (req, res) => {
 
   try {
     await Like.destroy({ where: { userId, postId } });
-    res.status(200).end();
+    res.sendStatus(200);
   } catch (error) {
     log.error(error);
-    res.status(500).end();
+    res.sendStatus(500);
   }
 };
 

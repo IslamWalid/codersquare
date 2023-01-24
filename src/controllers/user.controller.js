@@ -19,7 +19,7 @@ const createUser = async (req, res) => {
     if (error instanceof UniqueConstraintError) {
       res.status(400).json({ err: 'email already exists' });
     } else {
-      res.status(500).end();
+      res.sendStatus(500);
     }
   }
 };
