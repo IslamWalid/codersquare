@@ -1,2 +1,8 @@
 node_modules
 package-lock.json
+
+# database used for testing
+DB_FILE.db
+
+todo.md
+Session.vim
