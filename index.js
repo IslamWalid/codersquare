@@ -6,6 +6,7 @@ const postsRouter = require('./src/routers/posts.route');
 const likesRouter = require('./src/routers/likes.route');
 const commentsRouter = require('./src/routers/comments.route');
 const errorHandler = require('./src/middlewares/error_handler.middleware');
+require('dotenv').config();
 
 (async () => {
   try {
@@ -23,5 +24,5 @@ const errorHandler = require('./src/middlewares/error_handler.middleware');
   app.use('/comments', commentsRouter);
   app.use(errorHandler);
 
-  app.listen(8080);
+  app.listen(process.env.PORT);
 })();
