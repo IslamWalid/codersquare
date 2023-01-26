@@ -3,7 +3,7 @@ const log = require('fancy-log');
 const { UniqueConstraintError } = require('sequelize');
 const { User } = require('../models');
 
-const createUser = async (req, res) => {
+const signup = async (req, res) => {
   const id = crypto.randomUUID();
   const { email, username, firstName, lastName, password } = req.body;
 
@@ -17,7 +17,10 @@ const createUser = async (req, res) => {
   } catch (error) {
     log.error(error);
     if (error instanceof UniqueConstraintError) {
-      res.status(400).json({ err: 'email already exists' });
+      const [alreadyExist] = error.fields;
+      if (alreadyExist) {
+        res.status(400).json({ err: `${alreadyExist} already exists` });
+      }
     } else {
       res.sendStatus(500);
     }
@@ -25,5 +28,5 @@ const createUser = async (req, res) => {
 };
 
 module.exports = {
-  createUser
+  signup
 };
