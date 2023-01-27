@@ -11,7 +11,7 @@ const signup = async (req, res) => {
   const id = crypto.randomUUID();
   const { email, username, firstName, lastName, password } = req.body;
 
-  if (!id || !email || !username || !firstName || !lastName || !password) {
+  if (!email || !username || !firstName || !lastName || !password) {
     return errorMsgSender(res, 400, 'required fields are missing');
   }
 

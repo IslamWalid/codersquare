@@ -1,9 +1,11 @@
 const log = require('fancy-log');
-const errorMsgSender = require('../utils/error_msg_sender');
+const crypto = require('crypto');
 const { ForeignKeyConstraintError } = require('sequelize');
+const errorMsgSender = require('../utils/error_msg_sender');
 const { Comment } = require('../models');
 
 const createComment = async (req, res) => {
+  const id = crypto.randomUUID();
   const { userId, postId, body } = req.body;
 
   if (!userId || !postId || !body) {
@@ -11,7 +13,7 @@ const createComment = async (req, res) => {
   }
 
   try {
-    await Comment.create({ userId, postId, body });
+    await Comment.create({ id, userId, postId, body });
     res.sendStatus(200);
   } catch (error) {
     log.error(error);

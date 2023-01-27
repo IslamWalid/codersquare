@@ -67,6 +67,10 @@ const Like = sequelize.define('Like', {}, {
 });
 
 const Comment = sequelize.define('Comment', {
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true
+  },
   body: {
     type: DataTypes.STRING,
     allowNull: false
@@ -78,14 +82,42 @@ const Comment = sequelize.define('Comment', {
   deletedAt: false
 });
 
-User.hasMany(Post, { foreignKey: 'userId', onDelete: 'CASCADE' });
-Post.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+User.hasMany(Post, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE'
+});
+Post.belongsTo(User, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE'
+});
 
-User.belongsToMany(Post, { through: Like, foreignKey: 'userId', otherKey: 'postId' });
-Post.belongsToMany(User, { through: Like, foreignKey: 'postId', otherKey: 'userId' });
+User.belongsToMany(Post, {
+  through: Like,
+  foreignKey: 'userId',
+  otherKey: 'postId'
+});
+Post.belongsToMany(User, {
+  through: Like,
+  foreignKey: 'postId',
+  otherKey: 'userId'
+});
 
-User.belongsToMany(Post, { through: Comment, foreignKey: 'userId', otherKey: 'postId' });
-Post.belongsToMany(User, { through: Comment, foreignKey: 'postId', otherKey: 'userId' });
+User.belongsToMany(Post, {
+  through: {
+    model: Comment,
+    unique: false
+  },
+  foreignKey: 'userId',
+  otherKey: 'postId'
+});
+Post.belongsToMany(User, {
+  through: {
+    model: Comment,
+    unique: false
+  },
+  foreignKey: 'postId',
+  otherKey: 'userId'
+});
 
 async function initDatabase () {
   await sequelize.sync();
