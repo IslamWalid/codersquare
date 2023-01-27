@@ -1,7 +1,9 @@
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const log = require('fancy-log');
-const { UniqueConstraintError } = require('sequelize');
+const jwt = require('jsonwebtoken');
 const errorMsgSender = require('../utils/error_msg_sender');
+const { UniqueConstraintError, Op } = require('sequelize');
 const { User } = require('../models');
 
 const signup = async (req, res) => {
@@ -12,22 +14,58 @@ const signup = async (req, res) => {
     return errorMsgSender(res, 400, 'required fields are missing');
   }
 
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password, salt);
+
   try {
-    await User.create({ id, email, username, firstName, lastName, password });
-    res.status(200).json({ id });
+    await User.create({ id, email, username, firstName, lastName, password: hash });
+    res.status(200).json({ token: genJwt(id) });
   } catch (error) {
     log.error(error);
     if (error instanceof UniqueConstraintError) {
-      const [alreadyExist] = error.fields;
-      if (alreadyExist) {
-        res.status(400).json({ err: `${alreadyExist} already exists` });
-      }
+      const [alreadyExistingField] = error.fields;
+      errorMsgSender(res, 400, `${alreadyExistingField} already exists`);
     } else {
       res.sendStatus(500);
     }
   }
 };
 
+const login = async (req, res) => {
+  const { emailOrUsername, password } = req.body;
+
+  if (!emailOrUsername || !password) {
+    return errorMsgSender(res, 400, 'required fields are missing');
+  }
+
+  try {
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [
+          { username: emailOrUsername },
+          { email: emailOrUsername }
+        ]
+      }
+    });
+
+    if (!user) {
+      return errorMsgSender(res, 404, 'user not found');
+    }
+
+    if (!await bcrypt.compare(password, user.password)) {
+      return errorMsgSender(res, 400, 'wrong password');
+    }
+    res.status(200).json({ token: genJwt(user.id) });
+  } catch (error) {
+    res.sendStatus(500);
+  }
+};
+
+const genJwt = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+};
+
 module.exports = {
-  signup
+  signup,
+  login
 };
