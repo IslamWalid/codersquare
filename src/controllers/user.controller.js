@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const log = require('fancy-log');
 const jwt = require('jsonwebtoken');
+const validator = require('validator');
 const errorMsgSender = require('../utils/error_msg_sender');
 const { UniqueConstraintError, Op } = require('sequelize');
 const { User } = require('../models');
@@ -12,6 +13,13 @@ const signup = async (req, res) => {
 
   if (!id || !email || !username || !firstName || !lastName || !password) {
     return errorMsgSender(res, 400, 'required fields are missing');
+  }
+
+  if (!validator.isEmail(email)) {
+    return errorMsgSender(res, 400, 'invalid email');
+  }
+  if (!validator.isStrongPassword(password)) {
+    return errorMsgSender(res, 400, 'weak password');
   }
 
   const salt = await bcrypt.genSalt(10);
