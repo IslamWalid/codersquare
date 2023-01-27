@@ -1,5 +1,6 @@
 const log = require('fancy-log');
 const crypto = require('crypto');
+const errorMsgSender = require('../utils/error_msg_sender');
 const { ForeignKeyConstraintError } = require('sequelize');
 const { Post } = require('../models');
 
@@ -8,7 +9,7 @@ const createPost = async (req, res) => {
   const { userId, title, body } = req.body;
 
   if (!userId || !title || !body) {
-    return res.status(400).json({ msg: 'required fields are missing' });
+    return errorMsgSender(res, 400, 'required fields are missing');
   }
 
   try {
@@ -17,7 +18,7 @@ const createPost = async (req, res) => {
   } catch (error) {
     log.error(error);
     if (error instanceof ForeignKeyConstraintError) {
-      res.status(400).json({ msg: 'userId does not belong to existing user' });
+      errorMsgSender(res, 400, 'userId does not belong to existing user');
     } else {
       res.sendStatus(500);
     }
@@ -32,7 +33,7 @@ const getPost = async (req, res) => {
     if (post) {
       res.status(200).json(post);
     } else {
-      res.status(404).json({ msg: 'post not found' });
+      errorMsgSender(res, 404, 'post not found');
     }
   } catch (error) {
     log.error(error);

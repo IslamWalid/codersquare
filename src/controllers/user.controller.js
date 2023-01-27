@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const log = require('fancy-log');
 const { UniqueConstraintError } = require('sequelize');
+const errorMsgSender = require('../utils/error_msg_sender');
 const { User } = require('../models');
 
 const signup = async (req, res) => {
@@ -8,7 +9,7 @@ const signup = async (req, res) => {
   const { email, username, firstName, lastName, password } = req.body;
 
   if (!id || !email || !username || !firstName || !lastName || !password) {
-    return res.status(400).json({ msg: 'required fields are missing' });
+    return errorMsgSender(res, 400, 'required fields are missing');
   }
 
   try {
