@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     semi: ['warn', 'always'],
     quotes: ['warn', 'single'],
-    'no-trailing-spaces': ['warn']
+    'no-trailing-spaces': ['warn'],
+    'comma-dangle': ['warn']
   }
 };
