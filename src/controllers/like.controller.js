@@ -1,6 +1,7 @@
 const log = require('fancy-log');
 const errorMsgSender = require('../utils/error_msg_sender');
 const { ForeignKeyConstraintError, UniqueConstraintError } = require('sequelize');
+const User = require('../models/user.model');
 const Like = require('../models/like.model');
 
 const createLike = async (req, res) => {
@@ -30,7 +31,12 @@ const getPostLikes = async (req, res) => {
 
   try {
     const likes = await Like.findAll({
-      attributes: { exclude: 'userId' },
+      attributes: [],
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username', 'firstName', 'lastName']
+      },
       where: { postId }
     });
     res.status(200).json(likes);

@@ -2,6 +2,7 @@ const log = require('fancy-log');
 const crypto = require('crypto');
 const errorMsgSender = require('../utils/error_msg_sender');
 const { ForeignKeyConstraintError } = require('sequelize');
+const User = require('../models/user.model');
 const Post = require('../models/post.model');
 
 const createPost = async (req, res) => {
@@ -30,7 +31,12 @@ const getPost = async (req, res) => {
 
   try {
     const post = await Post.findByPk(id, {
-      attributes: { exclude: 'userId' }
+      attributes: { exclude: ['id', 'userId'] },
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username', 'firstName', 'lastName']
+      }
     });
     if (!post) {
       return errorMsgSender(res, 404, 'post not found');
@@ -45,7 +51,12 @@ const getPost = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     res.status(200).json(await Post.findAll({
-      attributes: { exclude: 'userId' }
+      attributes: { exclude: ['userId'] },
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username', 'firstName', 'lastName']
+      }
     }));
   } catch (error) {
     log.error(error);

@@ -2,6 +2,7 @@ const log = require('fancy-log');
 const crypto = require('crypto');
 const { ForeignKeyConstraintError } = require('sequelize');
 const errorMsgSender = require('../utils/error_msg_sender');
+const User = require('../models/user.model');
 const Comment = require('../models/comment.model');
 
 const createComment = async (req, res) => {
@@ -30,7 +31,12 @@ const getPostComments = async (req, res) => {
 
   try {
     const comments = await Comment.findAll({
-      attributes: { exclude: 'userId' },
+      attributes: { exclude: ['userId', 'postId'] },
+      include: {
+        model: User,
+        as: 'user',
+        attributes: ['username', 'firstName', 'lastName']
+      },
       where: { postId }
     });
     res.status(200).json(comments);
