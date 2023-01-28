@@ -1,6 +1,6 @@
 const log = require('fancy-log');
 const errorMsgSender = require('../utils/error_msg_sender');
-const { ForeignKeyConstraintError } = require('sequelize');
+const { ForeignKeyConstraintError, UniqueConstraintError } = require('sequelize');
 const Like = require('../models/like.model');
 
 const createLike = async (req, res) => {
@@ -17,6 +17,8 @@ const createLike = async (req, res) => {
     log.error(error);
     if (error instanceof ForeignKeyConstraintError) {
       errorMsgSender(res, 404, 'post not found');
+    } else if (error instanceof UniqueConstraintError) {
+      errorMsgSender(res, 400, 'like already exists');
     } else {
       res.sendStatus(500);
     }
