@@ -20,8 +20,6 @@ const initDatabase = async (sequelize) => {
   Like.init(sequelize);
   Comment.init(sequelize);
 
-  await sequelize.sync();
-
   User.hasMany(Post, { foreignKey: 'userId', onDelete: 'CASCADE' });
   Post.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
 
@@ -30,6 +28,8 @@ const initDatabase = async (sequelize) => {
 
   User.belongsToMany(Post, { through: { model: Comment, unique: false }, foreignKey: 'userId' });
   Post.belongsToMany(User, { through: { model: Comment, unique: false }, foreignKey: 'postId' });
+
+  await sequelize.sync();
 };
 
 module.exports = {

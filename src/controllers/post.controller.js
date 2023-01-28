@@ -6,14 +6,14 @@ const Post = require('../models/post.model');
 
 const createPost = async (req, res) => {
   const id = crypto.randomUUID();
-  const { userId, title, body } = req.body;
+  const { title, body } = req.body;
 
-  if (!userId || !title || !body) {
+  if (!title || !body) {
     return errorMsgSender(res, 400, 'required fields are missing');
   }
 
   try {
-    await Post.create({ id, userId, title, body });
+    await Post.create({ id, userId: res.locals.userId, title, body });
     res.status(200).json({ id });
   } catch (error) {
     log.error(error);
@@ -29,12 +29,13 @@ const getPost = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const post = await Post.findByPk(id);
-    if (post) {
-      res.status(200).json(post);
-    } else {
-      errorMsgSender(res, 404, 'post not found');
+    const post = await Post.findByPk(id, {
+      attributes: { exclude: 'userId' }
+    });
+    if (!post) {
+      return errorMsgSender(res, 404, 'post not found');
     }
+    res.status(200).json(post);
   } catch (error) {
     log.error(error);
     res.sendStatus(500);
@@ -43,7 +44,9 @@ const getPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    res.status(200).json(await Post.findAll());
+    res.status(200).json(await Post.findAll({
+      attributes: { exclude: 'userId' }
+    }));
   } catch (error) {
     log.error(error);
     res.sendStatus(500);

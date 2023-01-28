@@ -4,19 +4,19 @@ const { ForeignKeyConstraintError } = require('sequelize');
 const Like = require('../models/like.model');
 
 const createLike = async (req, res) => {
-  const { userId, postId } = req.body;
+  const { postId } = req.body;
 
-  if (!userId || !postId) {
+  if (!postId) {
     return errorMsgSender(res, 400, 'required fields are missing');
   }
 
   try {
-    await Like.create({ userId, postId });
+    await Like.create({ userId: res.locals.userId, postId });
     res.sendStatus(200);
   } catch (error) {
     log.error(error);
     if (error instanceof ForeignKeyConstraintError) {
-      errorMsgSender(res, 400, 'userId or postId does not belong to existing user or post');
+      errorMsgSender(res, 404, 'post not found');
     } else {
       res.sendStatus(500);
     }
@@ -24,10 +24,13 @@ const createLike = async (req, res) => {
 };
 
 const getPostLikes = async (req, res) => {
-  const postId = req.params.id;
+  const postId = req.params.postid;
 
   try {
-    const likes = await Like.findAll({ where: { postId } });
+    const likes = await Like.findAll({
+      attributes: { exclude: 'userId' },
+      where: { postId }
+    });
     res.status(200).json(likes);
   } catch (error) {
     log.error(error);
@@ -36,10 +39,10 @@ const getPostLikes = async (req, res) => {
 };
 
 const deleteLike = async (req, res) => {
-  const { userId, postId } = req.body;
+  const postId = req.params.postid;
 
   try {
-    await Like.destroy({ where: { userId, postId } });
+    await Like.destroy({ where: { userId: res.locals.userId, postId } });
     res.sendStatus(200);
   } catch (error) {
     log.error(error);

@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const log = require('fancy-log');
+const User = require('../models/user.model');
 const errorMsgSender = require('../utils/error_msg_sender');
 
-const authMiddleware = (req, res, next) => {
+const userAuthentication = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
     errorMsgSender(res, 401, 'user not authorized');
@@ -10,14 +11,15 @@ const authMiddleware = (req, res, next) => {
 
   const token = authorization.split(' ')[1];
   try {
-    const { userId } = jwt.verify(token, process.env.JWT_SECRET);
-    const user = User.findByPk(userId);
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
+    const user = User.findByPk(id);
     if (!user) {
       return errorMsgSender(res, 401, 'user not authorized');
     }
-    res.locals.userId = userId;
+    res.locals.userId = id;
     next();
   } catch (error) {
+    log.error(error);
     if (error instanceof jwt.TokenExpiredError) {
       errorMsgSender(res, 401, 'token expired');
     } else if (error instanceof jwt.JsonWebTokenError) {
@@ -28,4 +30,4 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+module.exports = userAuthentication;
