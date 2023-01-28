@@ -1,3 +1,4 @@
+const cors = require('cors');
 const log = require('fancy-log');
 const express = require('express');
 const models = require('./src/models');
@@ -19,6 +20,7 @@ require('dotenv').config();
   }
 
   const app = express();
+  app.use(cors());
   app.use(express.json());
   app.use('/users', usersRouter);
   app.use(userAuthentication);
