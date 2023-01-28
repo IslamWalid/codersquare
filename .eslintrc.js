@@ -14,6 +14,7 @@ module.exports = {
     semi: ['warn', 'always'],
     quotes: ['warn', 'single'],
     'no-trailing-spaces': ['warn'],
-    'comma-dangle': ['warn']
+    'comma-dangle': ['warn'],
+    'no-multiple-empty-lines': ['warn']
   }
 };
