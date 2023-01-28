@@ -1,7 +1,7 @@
 const log = require('fancy-log');
 const errorMsgSender = require('../utils/error_msg_sender');
 const { ForeignKeyConstraintError } = require('sequelize');
-const { Like } = require('../models');
+const Like = require('../models/like.model');
 
 const createLike = async (req, res) => {
   const { userId, postId } = req.body;

@@ -2,7 +2,7 @@ const log = require('fancy-log');
 const crypto = require('crypto');
 const { ForeignKeyConstraintError } = require('sequelize');
 const errorMsgSender = require('../utils/error_msg_sender');
-const { Comment } = require('../models');
+const Comment = require('../models/comment.model');
 
 const createComment = async (req, res) => {
   const id = crypto.randomUUID();
@@ -38,10 +38,14 @@ const getPostComments = async (req, res) => {
 };
 
 const deleteComment = async (req, res) => {
-  const { userId, postId } = req.body;
+  const { id } = req.body;
+
+  if (!id) {
+    return errorMsgSender(res, 400, 'required fields are missing');
+  }
 
   try {
-    await Comment.destroy({ where: { userId, postId } });
+    await Comment.destroy({ where: { id } });
     res.sendStatus(200);
   } catch (error) {
     log.error(error);

@@ -1,132 +1,38 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize } = require('sequelize');
+const User = require('./user.model');
+const Post = require('./post.model');
+const Like = require('./like.model');
+const Comment = require('./comment.model');
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: process.env.DB_FILE,
-  dialectOptions: {
-    foreign_keys: 'ON'
-  }
-});
+const connectDatabase = (dbFile) => {
+  return new Sequelize({
+    dialect: 'sqlite',
+    storage: dbFile,
+    dialectOptions: {
+      foreign_keys: 'ON'
+    }
+  });
+};
 
-const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.UUID,
-    primaryKey: true
-  },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  firstName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  lastName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
-}, {
-  timestamps: true,
-  createdAt: true,
-  updatedAt: false,
-  deletedAt: false
-});
+const initDatabase = async (sequelize) => {
+  User.init(sequelize);
+  Post.init(sequelize);
+  Like.init(sequelize);
+  Comment.init(sequelize);
 
-const Post = sequelize.define('Post', {
-  id: {
-    type: DataTypes.UUID,
-    primaryKey: true
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  body: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
-}, {
-  timestamps: true,
-  createdAt: true,
-  updatedAt: false,
-  deletedAt: false
-});
-
-const Like = sequelize.define('Like', {}, {
-  timestamps: false
-});
-
-const Comment = sequelize.define('Comment', {
-  id: {
-    type: DataTypes.UUID,
-    primaryKey: true
-  },
-  body: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
-}, {
-  timestamps: true,
-  createdAt: true,
-  updatedAt: false,
-  deletedAt: false
-});
-
-User.hasMany(Post, {
-  foreignKey: 'userId',
-  onDelete: 'CASCADE'
-});
-Post.belongsTo(User, {
-  foreignKey: 'userId',
-  onDelete: 'CASCADE'
-});
-
-User.belongsToMany(Post, {
-  through: Like,
-  foreignKey: 'userId',
-  otherKey: 'postId'
-});
-Post.belongsToMany(User, {
-  through: Like,
-  foreignKey: 'postId',
-  otherKey: 'userId'
-});
-
-User.belongsToMany(Post, {
-  through: {
-    model: Comment,
-    unique: false
-  },
-  foreignKey: 'userId',
-  otherKey: 'postId'
-});
-Post.belongsToMany(User, {
-  through: {
-    model: Comment,
-    unique: false
-  },
-  foreignKey: 'postId',
-  otherKey: 'userId'
-});
-
-async function initDatabase () {
   await sequelize.sync();
-}
+
+  User.hasMany(Post, { foreignKey: 'userId', onDelete: 'CASCADE' });
+  Post.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+
+  User.belongsToMany(Post, { through: Like, foreignKey: 'userId' });
+  Post.belongsToMany(User, { through: Like, foreignKey: 'postId' });
+
+  User.belongsToMany(Post, { through: { model: Comment, unique: false }, foreignKey: 'userId' });
+  Post.belongsToMany(User, { through: { model: Comment, unique: false }, foreignKey: 'postId' });
+};
 
 module.exports = {
-  User,
-  Post,
-  Like,
-  Comment,
+  connectDatabase,
   initDatabase
 };

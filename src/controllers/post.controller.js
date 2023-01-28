@@ -2,7 +2,7 @@ const log = require('fancy-log');
 const crypto = require('crypto');
 const errorMsgSender = require('../utils/error_msg_sender');
 const { ForeignKeyConstraintError } = require('sequelize');
-const { Post } = require('../models');
+const Post = require('../models/post.model');
 
 const createPost = async (req, res) => {
   const id = crypto.randomUUID();

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const errorMsgSender = require('../utils/error_msg_sender');
 const { UniqueConstraintError, Op } = require('sequelize');
-const { User } = require('../models');
+const User = require('../models/user.model');
 
 const signup = async (req, res) => {
   const id = crypto.randomUUID();

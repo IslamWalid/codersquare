@@ -10,7 +10,8 @@ require('dotenv').config();
 
 (async () => {
   try {
-    await models.initDatabase();
+    const connection = models.connectDatabase(process.env.DB_FILE);
+    await models.initDatabase(connection);
   } catch (error) {
     log.error(error);
     process.exit(1);
