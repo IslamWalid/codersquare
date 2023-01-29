@@ -32,7 +32,7 @@ const signup = async (req, res) => {
     log.error(error);
     if (error instanceof UniqueConstraintError) {
       const [alreadyExistingField] = error.fields;
-      errorMsgSender(res, 400, `${alreadyExistingField} already exists`);
+      errorMsgSender(res, 409, `${alreadyExistingField} already exists`);
     } else {
       res.sendStatus(500);
     }
@@ -57,11 +57,11 @@ const login = async (req, res) => {
     });
 
     if (!user) {
-      return errorMsgSender(res, 404, 'user not found');
+      return errorMsgSender(res, 404, 'wrong credentials');
     }
 
     if (!await bcrypt.compare(password, user.password)) {
-      return errorMsgSender(res, 400, 'wrong password');
+      return errorMsgSender(res, 404, 'wrong password');
     }
     res.status(200).json({ token: genJwt(user.id) });
   } catch (error) {

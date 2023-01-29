@@ -19,7 +19,7 @@ const createLike = async (req, res) => {
     if (error instanceof ForeignKeyConstraintError) {
       errorMsgSender(res, 404, 'post not found');
     } else if (error instanceof UniqueConstraintError) {
-      errorMsgSender(res, 400, 'like already exists');
+      errorMsgSender(res, 409, 'like already exists');
     } else {
       res.sendStatus(500);
     }

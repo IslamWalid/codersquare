@@ -1,7 +1,6 @@
 const log = require('fancy-log');
 const crypto = require('crypto');
 const errorMsgSender = require('../utils/error_msg_sender');
-const { ForeignKeyConstraintError } = require('sequelize');
 const User = require('../models/user.model');
 const Post = require('../models/post.model');
 
@@ -18,11 +17,7 @@ const createPost = async (req, res) => {
     res.status(200).json({ id });
   } catch (error) {
     log.error(error);
-    if (error instanceof ForeignKeyConstraintError) {
-      errorMsgSender(res, 400, 'userId does not belong to existing user');
-    } else {
-      res.sendStatus(500);
-    }
+    res.sendStatus(500);
   }
 };
 
