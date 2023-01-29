@@ -1,0 +1,420 @@
+---
+openapi: 3.0.0
+info:
+  title: codersquare
+  description: codersquare api documentation
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/IslamWalid/codersquare/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /users/signup:
+    post:
+      tags:
+      - signup
+      summary: signing up new user
+      operationId: signupUser
+      requestBody:
+        description: user information to sign up
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userSignup'
+        required: true
+      responses:
+        "200":
+          description: user signed up successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jwt'
+        "400":
+          description: invalid or missing input field
+        "409":
+          description: email or username already exists
+        "500":
+          description: internal server error
+  /users/login:
+    post:
+      tags:
+      - login
+      summary: login existing user
+      operationId: loginUser
+      requestBody:
+        description: user information to login
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userLogin'
+        required: true
+      responses:
+        "200":
+          description: user logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jwt'
+        "400":
+          description: missing required fields
+        "404":
+          description: wrong credentials
+        "500":
+          description: internel server error
+  /posts:
+    get:
+      tags:
+      - get all posts
+      summary: get all posts
+      operationId: getAllPosts
+      responses:
+        "200":
+          description: posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/postInfo'
+        "500":
+          description: internal server error
+    post:
+      tags:
+      - new post
+      summary: create new post
+      operationId: createPost
+      requestBody:
+        description: create post information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newPost'
+        required: true
+      responses:
+        "200":
+          description: post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createRes'
+        "400":
+          description: invalid or missing input field
+        "500":
+          description: internal server error
+  /posts/{id}:
+    get:
+      tags:
+      - get post
+      summary: get existing post by its id
+      operationId: getPost
+      parameters:
+      - name: id
+        in: path
+        description: post id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: post retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postInfo'
+        "404":
+          description: post id not found
+        "500":
+          description: internal server error
+    delete:
+      tags:
+      - delete post
+      summary: delete post by its id
+      operationId: deletePost
+      parameters:
+      - name: id
+        in: path
+        description: post id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: post deleted successfully
+        "400":
+          description: missing required post id
+        "401":
+          description: user not authorized to delete this post
+        "500":
+          description: internal server error
+  /comments:
+    post:
+      tags:
+      - new comment
+      summary: create new comment on existing post
+      operationId: createComment
+      requestBody:
+        description: create comment information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newComment'
+        required: true
+      responses:
+        "200":
+          description: comment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createRes'
+        "400":
+          description: invalid or missing input field
+        "404":
+          description: post id not found
+        "500":
+          description: internal server error
+  /comments/{postid}:
+    get:
+      tags:
+      - get all post comments
+      summary: get all the comments of the given post
+      operationId: getPostComments
+      parameters:
+      - name: postid
+        in: path
+        description: post id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: comments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/commentInfo'
+        "500":
+          description: internal server error
+  /comments/{id}:
+    delete:
+      tags:
+      - delete comment
+      summary: delete comment by its id
+      operationId: deleteComment
+      parameters:
+      - name: id
+        in: path
+        description: comment id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: post deleted successfully
+        "400":
+          description: missing required comment id
+        "401":
+          description: user not authorized to delete this post
+        "500":
+          description: internal server error
+  /likes:
+    post:
+      tags:
+      - create like
+      summary: create new like on a post
+      operationId: createLike
+      requestBody:
+        description: create like information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newLike'
+        required: true
+      responses:
+        "200":
+          description: like created successfully
+        "400":
+          description: invalid or missing input field
+        "404":
+          description: post id not found
+        "409":
+          description: like already exists
+        "500":
+          description: internal server error
+  /likes/{postid}:
+    get:
+      tags:
+      - get all post likes
+      summary: get all the likes of the given post
+      operationId: getPostLikes
+      parameters:
+      - name: postid
+        in: path
+        description: post id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: likes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/likeInfo'
+        "500":
+          description: internal server error
+    delete:
+      tags:
+      - delete like
+      parameters:
+      - name: postid
+        in: path
+        description: post id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: likes retrieved successfully
+        "500":
+          description: internal server error
+components:
+  schemas:
+    userSignup:
+      required:
+      - email
+      - firstName
+      - lastName
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          description: must be unique username
+          example: islam_walid
+        email:
+          type: string
+          description: must be unique email
+          example: islamwalid@example.com
+        firstName:
+          type: string
+          example: Islam
+        lastName:
+          type: string
+          example: Walid
+        password:
+          type: string
+    userLogin:
+      required:
+      - emailOrUsername
+      - password
+      type: object
+      properties:
+        emailOrUsername:
+          type: string
+        password:
+          type: string
+    userInfo:
+      type: object
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    jwt:
+      type: object
+      properties:
+        token:
+          type: string
+          description: encoded Json Web Token
+    newPost:
+      required:
+      - body
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          example: post title
+        body:
+          type: string
+          example: this is the post body or content
+    postInfo:
+      type: object
+      properties:
+        title:
+          type: string
+          example: post title
+        body:
+          type: string
+          example: this is the post body or content
+        createdAt:
+          type: string
+          example: 2023-01-28T15:39:45.808Z
+        user:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/userInfo'
+    newComment:
+      required:
+      - body
+      - postId
+      type: object
+      properties:
+        postId:
+          type: string
+        body:
+          type: string
+          example: this is a comment
+    commentInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: comment id
+        body:
+          type: string
+          example: this is a comment
+        createdAt:
+          type: string
+          example: 2023-01-28T15:39:45.808Z
+        user:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/userInfo'
+    newLike:
+      type: object
+      properties:
+        id:
+          type: string
+      description: contains the id of the post to create like on it
+    likeInfo:
+      type: object
+      properties:
+        user:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/userInfo'
+    createRes:
+      type: object
+      properties:
+        id:
+          type: string
+      description: contains the id of the newly created post or comment
