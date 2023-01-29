@@ -32,10 +32,7 @@ class User extends Model {
     },
     {
       sequelize,
-      timestamps: true,
-      createdAt: true,
-      updatedAt: false,
-      deletedAt: false
+      timestamps: false
     });
   }
 }
