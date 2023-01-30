@@ -45,14 +45,15 @@ const getPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    res.status(200).json(await Post.findAll({
+    const posts = await Post.findAll({
       attributes: { exclude: ['userId'] },
       include: {
         model: User,
         as: 'postAuthor',
         attributes: ['username', 'firstName', 'lastName']
       }
-    }));
+    });
+    res.status(200).json({ posts });
   } catch (error) {
     log.error(error);
     res.sendStatus(500);

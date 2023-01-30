@@ -5,8 +5,9 @@ const errorMsgSender = require('../utils/error_msg_sender');
 
 const userAuthentication = async (req, res, next) => {
   const { authorization } = req.headers;
+
   if (!authorization) {
-    errorMsgSender(res, 401, 'user not authorized');
+    return errorMsgSender(res, 401, 'user not authorized');
   }
 
   const token = authorization.split(' ')[1];

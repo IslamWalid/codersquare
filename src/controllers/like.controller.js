@@ -39,7 +39,7 @@ const getPostLikes = async (req, res) => {
       },
       where: { postId }
     });
-    res.status(200).json(likes);
+    res.status(200).json({ likes });
   } catch (error) {
     log.error(error);
     res.sendStatus(500);

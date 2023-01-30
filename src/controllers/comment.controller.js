@@ -39,7 +39,7 @@ const getPostComments = async (req, res) => {
       },
       where: { postId }
     });
-    res.status(200).json(comments);
+    res.status(200).json({ comments });
   } catch (error) {
     log.error(error);
     res.sendStatus(500);
