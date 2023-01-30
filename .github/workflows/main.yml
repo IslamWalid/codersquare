@@ -14,3 +14,12 @@ jobs:
       with: 
         rules-path: './.eslintrc.ci.js'
         setup-from-package-json: 'true'
+
+    - name: build and push docker image
+      uses: mr-smithers-excellent/docker-build-push@v5
+      with:
+        image: islamwalid/codersquare
+        tags: latest
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
