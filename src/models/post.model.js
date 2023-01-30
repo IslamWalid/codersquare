@@ -7,6 +7,13 @@ class Post extends Model {
         type: DataTypes.UUID,
         primaryKey: true
       },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'Users',
+          key: 'id'
+        }
+      },
       title: {
         type: DataTypes.STRING,
         allowNull: false

@@ -34,7 +34,7 @@ const getPostComments = async (req, res) => {
       attributes: { exclude: ['userId', 'postId'] },
       include: {
         model: User,
-        as: 'user',
+        as: 'commentAuthor',
         attributes: ['username', 'firstName', 'lastName']
       },
       where: { postId }

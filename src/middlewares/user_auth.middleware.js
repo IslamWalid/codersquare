@@ -3,7 +3,7 @@ const log = require('fancy-log');
 const User = require('../models/user.model');
 const errorMsgSender = require('../utils/error_msg_sender');
 
-const userAuthentication = (req, res, next) => {
+const userAuthentication = async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
     errorMsgSender(res, 401, 'user not authorized');
@@ -12,7 +12,7 @@ const userAuthentication = (req, res, next) => {
   const token = authorization.split(' ')[1];
   try {
     const { id } = jwt.verify(token, process.env.JWT_SECRET);
-    const user = User.findByPk(id);
+    const user = await User.findByPk(id);
     if (!user) {
       return errorMsgSender(res, 401, 'user not authorized');
     }

@@ -29,7 +29,7 @@ const getPost = async (req, res) => {
       attributes: { exclude: ['id', 'userId'] },
       include: {
         model: User,
-        as: 'user',
+        as: 'postAuthor',
         attributes: ['username', 'firstName', 'lastName']
       }
     });
@@ -49,7 +49,7 @@ const getAllPosts = async (req, res) => {
       attributes: { exclude: ['userId'] },
       include: {
         model: User,
-        as: 'user',
+        as: 'postAuthor',
         attributes: ['username', 'firstName', 'lastName']
       }
     }));

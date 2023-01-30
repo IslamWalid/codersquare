@@ -7,6 +7,20 @@ class Comment extends Model {
         type: DataTypes.UUID,
         primaryKey: true
       },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'Users',
+          key: 'id'
+        }
+      },
+      postId: {
+        type: DataTypes.UUID,
+        references: {
+          model: 'Posts',
+          key: 'id'
+        }
+      },
       body: {
         type: DataTypes.STRING,
         allowNull: false
