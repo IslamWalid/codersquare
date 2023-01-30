@@ -1,0 +1,16 @@
+name: codersquare CI
+
+on: [ push ]
+
+jobs:
+  images_build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: clone the repo
+      uses: actions/checkout@v3
+
+    - name: run eslint
+      uses: synergy-au/eslint-action@v1
+      with: 
+        rules-path: './.eslintrc.ci.js'
+        setup-from-package-json: 'true'
