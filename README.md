@@ -17,7 +17,7 @@ A JWT-based auth mechanism is to be used, with passwords
 encrypted and stored in the database.
 
 ### API
-The API is described in detail in this [swagger documentation](https://github.com/IslamWalid/codersquare/blob/master/docs/codersquare_swagger_doc.yaml)
+The API is described in detail in this [OpenAPI documentation](https://app.swaggerhub.com/apis-docs/IslamWalid/codersquare/1.0.0)
  
 **Users:**
 ```

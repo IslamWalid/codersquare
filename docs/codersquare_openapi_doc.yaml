@@ -72,11 +72,11 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/postInfo'
+                $ref: '#/components/schemas/inline_response_200'
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
     post:
       tags:
       - new post
@@ -100,6 +100,8 @@ paths:
           description: invalid or missing input field
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
   /posts/{id}:
     get:
       tags:
@@ -126,6 +128,8 @@ paths:
           description: post id not found
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
     delete:
       tags:
       - delete post
@@ -149,6 +153,8 @@ paths:
           description: user not authorized to delete this post
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
   /comments:
     post:
       tags:
@@ -175,6 +181,8 @@ paths:
           description: post id not found
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
   /comments/{postid}:
     get:
       tags:
@@ -196,11 +204,11 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/commentInfo'
+                $ref: '#/components/schemas/inline_response_200_1'
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
   /comments/{id}:
     delete:
       tags:
@@ -225,6 +233,8 @@ paths:
           description: user not authorized to delete this post
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
   /likes:
     post:
       tags:
@@ -249,6 +259,8 @@ paths:
           description: like already exists
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
   /likes/{postid}:
     get:
       tags:
@@ -270,14 +282,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/likeInfo'
+                $ref: '#/components/schemas/inline_response_200_2'
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
     delete:
       tags:
       - delete like
+      summary: delete like by the authorized user on specific post
+      operationId: deleteLike
       parameters:
       - name: postid
         in: path
@@ -292,6 +306,8 @@ paths:
           description: likes retrieved successfully
         "500":
           description: internal server error
+      security:
+      - bearerAuth: []
 components:
   schemas:
     userSignup:
@@ -369,9 +385,7 @@ components:
           type: string
           example: 2023-01-28T15:39:45.808Z
         postAuthor:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/userInfo'
+          $ref: '#/components/schemas/userInfo'
     newComment:
       required:
       - body
@@ -396,9 +410,7 @@ components:
           type: string
           example: 2023-01-28T15:39:45.808Z
         commentAuthor:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/userInfo'
+          $ref: '#/components/schemas/userInfo'
     newLike:
       type: object
       properties:
@@ -409,12 +421,36 @@ components:
       type: object
       properties:
         user:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/userInfo'
+          $ref: '#/components/schemas/userInfo'
     createRes:
       type: object
       properties:
         id:
           type: string
       description: contains the id of the newly created post or comment
+    inline_response_200:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/postInfo'
+    inline_response_200_1:
+      type: object
+      properties:
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/commentInfo'
+    inline_response_200_2:
+      type: object
+      properties:
+        likes:
+          type: array
+          items:
+            $ref: '#/components/schemas/likeInfo'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
