@@ -24,10 +24,6 @@ paths:
       responses:
         "200":
           description: user signed up successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/jwt'
         "400":
           description: invalid or missing input field
         "409":

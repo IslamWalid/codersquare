@@ -27,7 +27,7 @@ const signup = async (req, res) => {
 
   try {
     await User.create({ id, email, username, firstName, lastName, password: hash });
-    res.status(200).json({ token: genJwt(id) });
+    res.sendStatus(200);
   } catch (error) {
     log.error(error);
     if (error instanceof UniqueConstraintError) {

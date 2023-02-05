@@ -80,7 +80,6 @@ describe('user endpoints', () => {
     };
     const res = await req(app).post('/users/signup').send(reqBody);
     expect(res.statusCode).toBe(200);
-    expect(res.body.token).not.toBeUndefined();
   });
 
   it('signup user with invalid input', async () => {
