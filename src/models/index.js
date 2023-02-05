@@ -1,8 +1,5 @@
+const fs = require('fs/promises');
 const { Sequelize } = require('sequelize');
-const User = require('./user.model');
-const Post = require('./post.model');
-const Like = require('./like.model');
-const Comment = require('./comment.model');
 
 const connectDatabase = (dbFile) => {
   return new Sequelize({
@@ -15,15 +12,19 @@ const connectDatabase = (dbFile) => {
 };
 
 const initDatabase = async (sequelize) => {
-  User.init(sequelize);
-  Post.init(sequelize);
-  Like.init(sequelize);
-  Comment.init(sequelize);
+  const modelsDir = await fs.readdir('./src/models');
 
-  User.initAssociations();
-  Post.initAssociations();
-  Like.initAssociations();
-  Comment.initAssociations();
+  modelsDir
+    .filter((file) => file !== 'index.js')
+    .map((file) => {
+      const model = require(`./${file}`);
+      model.init(sequelize);
+
+      return model;
+    })
+    .forEach((model) => {
+      model.initAssociations();
+    });
 
   await sequelize.sync();
 };
