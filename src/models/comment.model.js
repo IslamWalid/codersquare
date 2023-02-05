@@ -34,6 +34,14 @@ class Comment extends Model {
       deletedAt: false
     });
   }
+
+  static initAssociations () {
+    const User = this.sequelize.models.User;
+    const Post = this.sequelize.models.Post;
+
+    this.belongsTo(User, { as: 'commentAuthor', foreignKey: 'userId', onDelete: 'CASCADE' });
+    this.belongsTo(Post, { foreignKey: 'postId', onDelete: 'CASCADE' });
+  }
 }
 
 module.exports = Comment;

@@ -35,6 +35,16 @@ class User extends Model {
       timestamps: false
     });
   }
+
+  static initAssociations () {
+    const Post = this.sequelize.models.Post;
+    const Like = this.sequelize.models.Like;
+    const Comment = this.sequelize.models.Comment;
+
+    this.hasMany(Post, { foreignKey: 'userId', onDelete: 'CASCADE' });
+    this.hasMany(Like, { foreignKey: 'userId', onDelete: 'CASCADE' });
+    this.hasMany(Comment, { foreignKey: 'userId', onDelete: 'CASCADE' });
+  }
 }
 
 module.exports = User;

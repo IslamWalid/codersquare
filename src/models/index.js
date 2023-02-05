@@ -3,7 +3,6 @@ const User = require('./user.model');
 const Post = require('./post.model');
 const Like = require('./like.model');
 const Comment = require('./comment.model');
-const setAssociations = require('./associations.model');
 
 const connectDatabase = (dbFile) => {
   return new Sequelize({
@@ -21,7 +20,10 @@ const initDatabase = async (sequelize) => {
   Like.init(sequelize);
   Comment.init(sequelize);
 
-  setAssociations();
+  User.initAssociations();
+  Post.initAssociations();
+  Like.initAssociations();
+  Comment.initAssociations();
 
   await sequelize.sync();
 };

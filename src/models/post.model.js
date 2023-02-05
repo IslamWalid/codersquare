@@ -31,6 +31,16 @@ class Post extends Model {
       deletedAt: false
     });
   }
+
+  static initAssociations () {
+    const User = this.sequelize.models.User;
+    const Like = this.sequelize.models.Like;
+    const Comment = this.sequelize.models.Comment;
+
+    this.hasMany(Like, { foreignKey: 'postId', onDelete: 'CASCADE' });
+    this.hasMany(Comment, { foreignKey: 'postId', onDelete: 'CASCADE' });
+    this.belongsTo(User, { as: 'postAuthor', foreignKey: 'userId', onDelete: 'CASCADE' });
+  }
 }
 
 module.exports = Post;
