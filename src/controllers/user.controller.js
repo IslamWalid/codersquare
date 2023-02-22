@@ -63,7 +63,24 @@ const login = async (req, res) => {
     if (!await bcrypt.compare(password, user.password)) {
       return errorMsgSender(res, 404, 'wrong password');
     }
+
+    user.loggedIn = true;
+    await user.save();
     res.status(200).json({ token: genJwt(user.id) });
+  } catch (error) {
+    log.error(error);
+    res.sendStatus(500);
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    await User.update({ loggedIn: 'false' }, {
+      where: {
+        id: res.locals.userId
+      }
+    });
+    res.sendStatus(200);
   } catch (error) {
     log.error(error);
     res.sendStatus(500);
@@ -76,5 +93,6 @@ const genJwt = (id) => {
 
 module.exports = {
   signup,
-  login
+  login,
+  logout
 };

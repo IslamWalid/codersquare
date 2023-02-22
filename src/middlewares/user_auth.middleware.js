@@ -14,9 +14,11 @@ const userAuthentication = async (req, res, next) => {
   try {
     const { id } = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(id);
-    if (!user) {
+
+    if (!user || !user.loggedIn) {
       return errorMsgSender(res, 401, 'user not authorized');
     }
+
     res.locals.userId = id;
     next();
   } catch (error) {

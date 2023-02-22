@@ -19,7 +19,7 @@ const createUser = async (username, email) => {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
 
-  await User.create({ id, email, username, firstName, lastName, password: hash });
+  await User.create({ id, email, username, firstName, lastName, password: hash, loggedIn: true });
 
   return id;
 };
@@ -115,6 +115,18 @@ describe('user endpoints', () => {
     await createUser('islam', 'islam@example.com');
     const res = await req(app).post('/users/login').send(reqBody);
     expect(res.statusCode).toBe(404);
+  });
+
+  it('logout user', async () => {
+    const id = await createUser('islam', 'islam@example.com');
+    const token = genJwt(id);
+    let res = await req(app).get('/users/logout')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+
+    res = await req(app).get('/posts')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.statusCode).toBe(401);
   });
 });
 

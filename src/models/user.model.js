@@ -28,6 +28,10 @@ class User extends Model {
       lastName: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      loggedIn: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       }
     },
     {

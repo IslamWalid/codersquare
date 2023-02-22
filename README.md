@@ -23,6 +23,7 @@ The API is described in detail in this [OpenAPI documentation](https://app.swagg
 ```
 /users/login  [POST]
 /users/signup [POST]
+/users/logout [GET]
 ```
 **Posts:**
 ```
@@ -61,6 +62,7 @@ comments. A minimal database implementation such as [sqlite3](https://sqlite.org
 | firstName | STRING |
 | lastName | STRING |
 | password | STRING |
+| loggedIn | BOOLEAN |
 
 **Posts**:
 | Column | Type |
