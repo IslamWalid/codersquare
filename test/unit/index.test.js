@@ -104,6 +104,11 @@ describe('user endpoints', () => {
     const res = await req(app).post('/users/login').send(reqBody);
     expect(res.statusCode).toBe(200);
     expect(res.body.token).not.toBeUndefined();
+    expect(res.body.user).toStrictEqual({
+      username: 'islam',
+      firstName: 'Islam',
+      lastName: 'Walid'
+    });
   });
 
   it('login with invalid credentials', async () => {
