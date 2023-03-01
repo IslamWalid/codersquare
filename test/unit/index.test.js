@@ -286,7 +286,10 @@ describe('like endpoint', () => {
     const res = await req(app).get(`/likes/${postId}`)
       .set('Authorization', `Bearer ${token}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body.likes).not.toBeUndefined();
+    expect(res.body).toStrictEqual({
+      count: 1,
+      isLiked: true
+    });
   });
 });
 
